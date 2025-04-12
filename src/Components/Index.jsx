@@ -1,7 +1,6 @@
 import { FeatureCard } from "./FeatureCard.jsx"
 import { Icons } from "./Icons"
 import { Link, useNavigate } from "react-router-dom"
-
 const styles = {
   hero: {
     maxWidth: "64rem",
@@ -74,6 +73,7 @@ export function Home() {
   return (
    <>
       <div style={styles.hero}>
+       
         <div style={styles.badge}><Icons.Ai/> AI-Powered</div>
         <h1 style={styles.title}>Track Your Carbon Footprint with AI</h1>
         <p style={styles.description}>

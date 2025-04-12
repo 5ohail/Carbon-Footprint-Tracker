@@ -113,6 +113,9 @@ export function Layout({ children }) {
             <Link to="/rewards" style={styles.sidebarLink}>
               <Icons.Token /> Token Rewards
             </Link>
+            <Link to="/report" style={styles.sidebarLink}>
+              <Icons.Report /> Report
+            </Link>
             <Link to="/iot" style={styles.sidebarLink}>
               <Icons.Bolt /> IoT Integration
             </Link>

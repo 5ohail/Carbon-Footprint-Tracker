@@ -31,7 +31,7 @@ const styles = {
   },
 };
 
-const CarbonFootprintTable = ({ heading, readings, date, serialNum, data }) => {
+const ReportTable = ({ heading, readings, date, serialNum, data }) => {
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
 
@@ -83,4 +83,4 @@ const CarbonFootprintTable = ({ heading, readings, date, serialNum, data }) => {
   );
 };
 
-export default CarbonFootprintTable;
+export default ReportTable;

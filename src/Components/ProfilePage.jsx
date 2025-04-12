@@ -674,7 +674,6 @@ export function ProfilePage() {
     .slice(-5)
     .reverse()
     .map((entry, index) => {
-      console.log(entry); // ✅ Log each entry
       return (
         <div
           key={index}

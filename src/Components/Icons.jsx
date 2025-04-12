@@ -50,6 +50,8 @@ export const Icons = {
   Ai: () => (
     <img src="/memory.svg" alt="AI Icon" />
   )
-  
-
+  ,
+  Report : ()=>(
+    <img src="/report.svg" alt="Report Icon" />
+  )
 }

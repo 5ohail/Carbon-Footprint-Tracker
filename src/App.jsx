@@ -10,8 +10,9 @@ import Contact from './Components/Contact.jsx'
 import Company  from './Components/Company.jsx'
 import Rewards from './Components/Rewards.jsx'
 import CarbonFootprintAI from './Components/AiAnalysis.jsx'
-import IOT from './Components/IOT.jsx'
+import Report from './Components/Report.jsx'
 import AuthLoader from './Components/AuthLoader.jsx'
+import Iot from './Components/Iot.jsx'
 
 function App() {
 
@@ -29,7 +30,8 @@ function App() {
           <Route path="/company" element={<Company />} />
           <Route path='/rewards' element={<Rewards />} />
           <Route path='/ai-analysis' element={<CarbonFootprintAI />} />
-          <Route path='/iot' element={<IOT />} />
+          <Route path='/report' element={<Report />} />
+          <Route path='/iot' element={<Iot/>}/>
         </Routes>
       </Layout>
     </>
