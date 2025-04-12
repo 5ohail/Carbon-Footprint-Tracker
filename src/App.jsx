@@ -12,7 +12,7 @@ import Rewards from './Components/Rewards.jsx'
 import CarbonFootprintAI from './Components/AiAnalysis.jsx'
 import Report from './Components/Report.jsx'
 import AuthLoader from './Components/AuthLoader.jsx'
-import Iot from './Components/Iot.jsx'
+import IOT from './Components/IOT.jsx'
 
 function App() {
 
@@ -31,7 +31,7 @@ function App() {
           <Route path='/rewards' element={<Rewards />} />
           <Route path='/ai-analysis' element={<CarbonFootprintAI />} />
           <Route path='/report' element={<Report />} />
-          <Route path='/iot' element={<Iot/>}/>
+          <Route path='/iot' element={<IOT/>}/>
         </Routes>
       </Layout>
     </>
