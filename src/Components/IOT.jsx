@@ -39,7 +39,7 @@ const styles = {
 
   
 };
-const Iot = () => {
+const IOT = () => {
   const { data, graphData } = useData();
   // TOTAL EMISSIONS FUNCTIONALITY
   const totalEmissions = () => {
@@ -196,4 +196,4 @@ const Iot = () => {
 );
 };
 
-export default Iot;
+export default IOT;
