@@ -1,6 +1,5 @@
-// DataContext.jsx
-import React, { createContext, useState, useContext } from "react";
-import { ref, onValue } from "firebase/database";
+import React, { createContext, useState, useContext, useRef } from "react";
+import { ref, onValue, off } from "firebase/database";
 import { db } from "./Firebase";
 
 const DataContext = createContext();
@@ -10,10 +9,15 @@ export const DataProvider = ({ children }) => {
   const [graphData, setGraphData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const dbRef = useRef(null); // store the DB ref to unsubscribe later
+
   const fetchData = (userId) => {
-    const dataRef = ref(db, `users/${userId}`);
+    if (!userId) return;
+
+    dbRef.current = ref(db, `users/${userId}`);
+
     onValue(
-      dataRef,
+      dbRef.current,
       (snapshot) => {
         const value = snapshot.val();
         setData(value || {});
@@ -36,7 +40,7 @@ export const DataProvider = ({ children }) => {
   };
 
   return (
-    <DataContext.Provider value={{ data, graphData, fetchData, loading }}>
+    <DataContext.Provider value={{ data, setData, graphData, setGraphData, fetchData, loading }}>
       {children}
     </DataContext.Provider>
   );

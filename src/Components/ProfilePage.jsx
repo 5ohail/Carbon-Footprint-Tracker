@@ -8,6 +8,7 @@ import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  signOut,
 } from "firebase/auth";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -187,7 +188,7 @@ export function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [creationDate, setCreationDate] = useState(null);
-  const { graphData , data} = useData();
+  const { graphData,setGraphData , data, setData} = useData();
 
   // WAIT USER TO LOAD
   useEffect(() => {
@@ -342,10 +343,14 @@ export function ProfilePage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      setUser(null)
+      setData({})
+      setGraphData([])
+      localStorage.removeItem("user"); // Also remove user from localStorage
+    });
   };
-
   const handleEditToggle = () => {
     if (isEditing) {
       // Cancel editing

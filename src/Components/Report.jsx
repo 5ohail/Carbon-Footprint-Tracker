@@ -14,17 +14,35 @@ const styles = {
 };
 
 const Report = () => {
-  const { data, fetchData, loading } = useData();
+  const { data, setData, fetchData, loading, setGraphData } = useData();
 
   useEffect(() => {
     const auth = getAuth();
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        fetchData(user.uid);
+        fetchData();
+      } else {
+        setData({});
+        setGraphData([]); // Clear graphData on logout
       }
     });
-    return () => unsubscribe();
-  }, [fetchData]);
+
+    const handleStorageChange = () => {
+      const updatedUser = localStorage.getItem("user");
+      if (!updatedUser) {
+        setData({});
+        setGraphData([]);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   const formattedData =
     data && typeof data === "object"
@@ -41,7 +59,6 @@ const Report = () => {
   return (
     <div className="container w-full flex flex-col items-center px-4">
       <h1 style={styles.heading}>Report</h1>
-
       {loading ? (
         <p className="text-gray-600 text-lg">Loading IoT data...</p>
       ) : formattedData.length > 0 ? (

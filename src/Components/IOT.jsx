@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useData } from "../utils/DataProvider";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -11,6 +11,8 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { useLocation } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 const styles = {
@@ -39,8 +41,26 @@ const styles = {
 
   
 };
-const Iot = () => {
-  const { data, graphData } = useData();
+const IOT = () => {
+  const { data, graphData,setGraphData,setData } = useData();
+  const location = useLocation();
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in
+        fetchData();
+      } else {
+        // User is logged out
+        setData({});
+        setGraphData([]);
+        localStorage.removeItem("user"); // Optional but good
+      }
+    });
+
+    return () => unsubscribe();
+  }, [location]);
+  
   // TOTAL EMISSIONS FUNCTIONALITY
   const totalEmissions = () => {
     let total = 0;
@@ -196,4 +216,4 @@ const Iot = () => {
 );
 };
 
-export default Iot;
+export default IOT;
