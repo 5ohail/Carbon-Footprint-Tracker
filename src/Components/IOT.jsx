@@ -14,7 +14,6 @@ import {
 import { useLocation } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-
 const styles = {
   statsGrid: {
     display: "grid",
@@ -38,20 +37,18 @@ const styles = {
     fontSize: "0.875rem",
     color: "#666",
   },
-
-  
 };
+
 const IOT = () => {
-  const { data, graphData,setGraphData,setData } = useData();
+  const { data, graphData, setGraphData, setData } = useData();
   const location = useLocation();
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is logged in
-        fetchData();
+        fetchData(); // Assuming `fetchData` is defined elsewhere
       } else {
-        // User is logged out
         setData({});
         setGraphData([]);
         localStorage.removeItem("user"); // Optional but good
@@ -60,37 +57,29 @@ const IOT = () => {
 
     return () => unsubscribe();
   }, [location]);
-  
+
   // TOTAL EMISSIONS FUNCTIONALITY
   const totalEmissions = () => {
-    let total = 0;
-    data
-      ? Object.values(data).map((e) => {
-          return (total += e.emission);
-        })
-      : 0;
-    return total;
+    return data ? Object.values(data).reduce((total, e) => total + e.emission, 0) : 0;
   };
+
   // CALCULATING THE REDUCTION GOALS
   const calculateReductionGoal = () => {
     if (!Array.isArray(graphData) || graphData.length === 0) return 0;
-  
-    const updateddata = graphData.map((entry) => {
+
+    const updatedData = graphData.map((entry) => {
       const reductionGoal = entry.emissions - entry.emissions * 0.1; // 10% reduction
       return {
         ...entry,
         reductionGoal: parseFloat(reductionGoal.toFixed(2)),
       };
     });
-  
-    const total = updateddata.reduce((sum, entry) => sum + entry.reductionGoal, 0);
-    const reductionGoal = total / updateddata.length;
-  
-    return isNaN(reductionGoal) ? 0 : reductionGoal;
-  };
-  
 
-  //AI to get total emission Reduction
+    const total = updatedData.reduce((sum, entry) => sum + entry.reductionGoal, 0);
+    return total / updatedData.length || 0;
+  };
+
+  // AI to get total emission reduction
   const getTotalEmissionReduction = (data) => {
     const sorted = Object.values(data)
       .filter((item) => item.emission !== undefined)
@@ -106,15 +95,12 @@ const IOT = () => {
     return totalReduction.toFixed(2); // in kg CO₂
   };
 
-  //GUAGE CHART LOGIC
+  // GAUGE CHART LOGIC
   const percentage = () => {
     const dataArray = graphData?.length ? graphData : null;
     if (!dataArray || dataArray.length === 0) return 0;
 
-    const total = dataArray.reduce(
-      (acc, item) => acc + (item.emissions || 0),
-      0
-    );
+    const total = dataArray.reduce((acc, item) => acc + (item.emissions || 0), 0);
     const avgEmissions = total / dataArray.length;
 
     const monthlyGoal = 200; // Change this as needed
@@ -122,98 +108,100 @@ const IOT = () => {
 
     return Math.min(percent, 100); // Cap it at 100%
   };
+
   return (
-  <>
-    <h2 className="font-bold text-3xl mb-4 text-[#0066cc]">Carbon Footprint Statistics</h2>
-              <div style={styles.statsGrid}>
-                <div style={styles.statCard}>
-                  <div style={styles.statValue}>{totalEmissions()} kg</div>
-                  <div style={styles.statLabel}>CO2 Emissions Tracked</div>
-                </div>
-                <div style={styles.statCard}>
-                  <div style={styles.statValue}>{getTotalEmissionReduction(data)} kg</div>
-                  <div style={styles.statLabel}>CO2 Emissions Reduced</div>
-                </div>
-                <div style={styles.statCard}>
-                  <div style={styles.statValue}>5</div>
-                  <div style={styles.statLabel}>Offset Projects Supported</div>
-                </div>
-              </div>
-              {/* Circular Gauge */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  marginTop: "2rem",
-                }}
-              >
-                <div style={{ width: 100, height: 100 }}>
-                  <CircularProgressbar
-                    value={calculateReductionGoal()}
-                    text={`${calculateReductionGoal()}%`}
-                    styles={buildStyles({
-                      pathColor: "#0066cc",
-                      textColor: "#0066cc",
-                    })}
-                  />
-                  <p
-                    style={{
-                      textAlign: "center",
-                      fontSize: "0.875rem",
-                      color: "#666",
-                    }}
-                  >
-                    Reduction Goal
-                  </p>
-                </div>
-                <div style={{ width: 100, height: 100 }}>
-                  <CircularProgressbar
-                    value={percentage()}
-                    text={`${percentage()}%`}
-                    styles={buildStyles({
-                      pathColor: "#e74c3c",
-                      textColor: "#e74c3c",
-                    })}
-                  />
-                  <p
-                    style={{
-                      textAlign: "center",
-                      fontSize: "0.875rem",
-                      color: "#666",
-                    }}
-                  >
-                    Current Impact
-                  </p>
-                </div>
-              </div>
-    
-              {/* Line Graph */}
-              <h2
-                style={{
-                  fontSize: "1.25rem",
-                  fontWeight: "600",
-                  marginBottom: "1rem",
-                  marginTop: "2rem",
-                }}
-              >
-                Monthly CO2 Emissions
-              </h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={graphData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="emissions"
-                    stroke="#0066cc"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-  </>
-);
+    <>
+      <h2 className="font-bold text-3xl mb-4 text-[#0066cc]">Carbon Footprint Statistics</h2>
+      <div style={styles.statsGrid}>
+        <div style={styles.statCard}>
+          <div style={styles.statValue}>{totalEmissions()} kg</div>
+          <div style={styles.statLabel}>CO2 Emissions Tracked</div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={styles.statValue}>{getTotalEmissionReduction(data)} kg</div>
+          <div style={styles.statLabel}>CO2 Emissions Reduced</div>
+        </div>
+        <div style={styles.statCard}>
+          <div style={styles.statValue}>5</div>
+          <div style={styles.statLabel}>Offset Projects Supported</div>
+        </div>
+      </div>
+
+      {/* Circular Gauge */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          marginTop: "2rem",
+        }}
+      >
+        <div style={{ width: 100, height: 100 }}>
+          <CircularProgressbar
+            value={calculateReductionGoal()}
+            text={`${calculateReductionGoal()}%`}
+            styles={buildStyles({
+              pathColor: "#0066cc",
+              textColor: "#0066cc",
+            })}
+          />
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "0.875rem",
+              color: "#666",
+            }}
+          >
+            Reduction Goal
+          </p>
+        </div>
+        <div style={{ width: 100, height: 100 }}>
+          <CircularProgressbar
+            value={percentage()}
+            text={`${percentage()}%`}
+            styles={buildStyles({
+              pathColor: "#e74c3c",
+              textColor: "#e74c3c",
+            })}
+          />
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "0.875rem",
+              color: "#666",
+            }}
+          >
+            Current Impact
+          </p>
+        </div>
+      </div>
+
+      {/* Line Graph */}
+      <h2
+        style={{
+          fontSize: "1.25rem",
+          fontWeight: "600",
+          marginBottom: "1rem",
+          marginTop: "2rem",
+        }}
+      >
+        Monthly CO2 Emissions
+      </h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={graphData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="emissions"
+            stroke="#0066cc"
+            strokeWidth={2}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
+  );
 };
 
 export default IOT;
