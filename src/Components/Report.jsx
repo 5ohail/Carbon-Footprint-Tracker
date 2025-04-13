@@ -14,17 +14,21 @@ const styles = {
 };
 
 const Report = () => {
-  const { data, setData, fetchData, loading, setGraphData } = useData();
-
+  const { data, setData, fetchData, loading, setGraphData,setLoading } = useData();
+  const Data = data ? data : {}
   useEffect(() => {
     const auth = getAuth();
-
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        fetchData();
-      } else {
+      if (user && !loading) {  // Ensure not calling fetchData if already loading
+        setLoading(true);
+        fetchData().then(() => {
+          setLoading(false);
+        });
+      } else if (!user) {
         setData({});
-        setGraphData([]); // Clear graphData on logout
+        setGraphData([]);
+        setLoading(false) // Clear graphData on logout
       }
     });
 
@@ -45,8 +49,8 @@ const Report = () => {
   }, []);
 
   const formattedData =
-    data && typeof data === "object"
-      ? Object.entries(data).map(([key, entry], index) => ({
+    Data && typeof Data === "object"
+      ? Object.entries(Data).map(([key, entry], index) => ({
           serial: index + 1,
           activity: entry.activity,
           co2Emitted: entry.emission,
