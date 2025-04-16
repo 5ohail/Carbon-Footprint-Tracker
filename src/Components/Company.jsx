@@ -45,10 +45,10 @@ const Company = () => {
         </p>
         <div className="flex flex-wrap gap-6">
           {[
-            { name: "Ashok Teli", role: "Hardware", pic: '/member-1.jpeg', linkedin: 'https://www.linkedin.com/in/ashok-teli-b581aa280/' },
-            { name: "Amrit Jha", role: "Hardware", pic: '/member-2.jpeg', linkedin: 'https://www.linkedin.com/in/amrit-jha-b85a0928b/' },
-            { name: "Sohail Ansari", role: "Web Developer", pic: '/member-4.jpeg', linkedin: 'www.linkedin.com/in/sohailansari163' },
-            { name: "Deepti Paliwal", role: "Presentation", pic: 'member-3.svg', linkedin: 'https://in.linkedin.com/in/deepti-paliwal-71bb95350 ' }
+            { name: "Ashok Teli",designation:"Leader", role: "Hardware", pic: '/member-1.jpeg', linkedin: 'https://www.linkedin.com/in/ashok-teli-b581aa280/' },
+            { name: "Amrit Jha", designation:"Co-leader", role: "Hardware", pic: '/member-2.jpeg', linkedin: 'https://www.linkedin.com/in/amrit-jha-b85a0928b/' },
+            { name: "Sohail Ansari",designation:"Member", role: "Web Developer", pic: '/member-4.jpeg', linkedin: 'https://www.linkedin.com/in/sohailansari163' },
+            { name: "Deepti Paliwal",designation:"Member", role: "Presentation", pic: 'member-3.svg', linkedin: 'https://in.linkedin.com/in/deepti-paliwal-71bb95350' }
           ].map((member, index) => (
             <div key={index} className="flex flex-col items-center text-center">
               <img
@@ -60,6 +60,7 @@ const Company = () => {
               />
               <p className="font-medium mt-2">{member.name}</p>
               <p className="text-sm text-gray-500 mt-0.5">{member.role}</p>
+              <p className={`text-sm mt-0.5 rounded-xl text-gray-50 px-3 ${member.designation == "Leader" ? 'bg-yellow-500 ' : (member.designation == 'Co-leader' ? 'bg-green-500':'bg-gray-500')}`}>{member.designation}</p>
             </div>
 
 
