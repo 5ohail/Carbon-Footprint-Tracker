@@ -48,7 +48,7 @@ const Company = () => {
             { name: "Ashok Teli", role: "Hardware", pic: '/member-1.jpeg', linkedin: 'https://www.linkedin.com/in/ashok-teli-b581aa280/' },
             { name: "Amrit Jha", role: "Hardware", pic: '/member-2.jpeg', linkedin: 'https://www.linkedin.com/in/amrit-jha-b85a0928b/' },
             { name: "Sohail Ansari", role: "Web Developer", pic: '/member-4.jpeg', linkedin: 'www.linkedin.com/in/sohailansari163' },
-            { name: "MEMBER", role: "Presentation", pic: 'https://randomuser.me/api/portraits/men/75.jpg', linkedin: '' }
+            { name: "Deepti Paliwal", role: "Presentation", pic: 'member-3.svg', linkedin: 'https://in.linkedin.com/in/deepti-paliwal-71bb95350 ' }
           ].map((member, index) => (
             <div key={index} className="flex flex-col items-center text-center">
               <img

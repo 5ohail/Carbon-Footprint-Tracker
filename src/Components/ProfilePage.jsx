@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthPage } from "../Components/AuthPage.jsx";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   getAuth,
   onAuthStateChanged,
@@ -344,13 +346,19 @@ export function ProfilePage() {
 
   const handleLogout = () => {
     const auth = getAuth();
-    signOut(auth).then(() => {
-      setUser(null)
-      setData({})
-      setGraphData([])
-      localStorage.removeItem("user"); // Also remove user from localStorage
-    });
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+        setData({});
+        setGraphData([]);
+        localStorage.removeItem("user"); // Also remove user from localStorage
+        toast.success("Logged out successfully"); // Fixed typo here
+      })
+      .catch((error) => {
+        toast.error("Error logging out");
+      });
   };
+  
   const handleEditToggle = () => {
     if (isEditing) {
       // Cancel editing
@@ -396,6 +404,7 @@ export function ProfilePage() {
   
   return (
     <div style={styles.container}>
+      
       <div style={styles.header}>
         <h1 style={styles.title}>Your Profile</h1>
         <p style={styles.subtitle}>
@@ -513,8 +522,10 @@ export function ProfilePage() {
                   >
                     Logout
                   </button>
+                  <ToastContainer />
                 </div>
               </div>
+              
             )}
           </div>
 

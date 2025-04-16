@@ -11,7 +11,8 @@ import {
   signInWithPopup,
   updateProfile,
 } from "firebase/auth"
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -137,8 +138,9 @@ const styles = {
     marginTop: "0.5rem",
   },
 }
+
 export function AuthPage({ onLoginSuccess }) {
-  const navigate  = useNavigate()
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("login")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -172,7 +174,6 @@ export function AuthPage({ onLoginSuccess }) {
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
 
-      // Store user info in localStorage (in a real app, use a more secure method)
       const userData = {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
@@ -181,12 +182,11 @@ export function AuthPage({ onLoginSuccess }) {
 
       localStorage.setItem("user", JSON.stringify(userData))
       setSuccess("Successfully logged in!")
+      toast.success("Successfully logged in!")
 
-      // Call onLoginSuccess callback if provided
       if (onLoginSuccess) {
         onLoginSuccess(userData)
       } else {
-        // Redirect to dashboard after successful login
         setTimeout(() => {
           navigate("/")
         }, 1000)
@@ -194,6 +194,7 @@ export function AuthPage({ onLoginSuccess }) {
     } catch (error) {
       console.error("Error signing in:", error)
       setError(error.message)
+      toast.error("Invalid Crdentials") // Show error toast
     } finally {
       setLoading(false)
     }
@@ -215,12 +216,10 @@ export function AuthPage({ onLoginSuccess }) {
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 
-      // Update the user profile with the username
       await updateProfile(userCredential.user, {
         displayName: username,
       })
 
-      // Store user info in localStorage (in a real app, use a more secure method)
       const userData = {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
@@ -229,12 +228,11 @@ export function AuthPage({ onLoginSuccess }) {
 
       localStorage.setItem("user", JSON.stringify(userData))
       setSuccess("Account created successfully!")
+      toast.success("Account created successfully!")
 
-      // Call onLoginSuccess callback if provided
       if (onLoginSuccess) {
         onLoginSuccess(userData)
       } else {
-        // Redirect to dashboard after successful signup
         setTimeout(() => {
           navigate("/")
         }, 1000)
@@ -242,6 +240,7 @@ export function AuthPage({ onLoginSuccess }) {
     } catch (error) {
       console.error("Error signing up:", error)
       setError(error.message)
+      toast.error("Can not Register the User") // Show error toast
     } finally {
       setLoading(false)
     }
@@ -254,7 +253,6 @@ export function AuthPage({ onLoginSuccess }) {
     try {
       const result = await signInWithPopup(auth, googleProvider)
 
-      // Store user info in localStorage (in a real app, use a more secure method)
       const userData = {
         uid: result.user.uid,
         email: result.user.email,
@@ -263,12 +261,11 @@ export function AuthPage({ onLoginSuccess }) {
 
       localStorage.setItem("user", JSON.stringify(userData))
       setSuccess("Successfully logged in with Google!")
+      toast.success("Successfully logged in with Google!")
 
-      // Call onLoginSuccess callback if provided
       if (onLoginSuccess) {
         onLoginSuccess(userData)
       } else {
-        // Redirect to dashboard after successful login
         setTimeout(() => {
           navigate("/")
         }, 1000)
@@ -276,6 +273,7 @@ export function AuthPage({ onLoginSuccess }) {
     } catch (error) {
       console.error("Error signing in with Google:", error)
       setError(error.message)
+      toast.error("Error Siging In") // Show error toast
     } finally {
       setLoading(false)
     }
@@ -345,16 +343,13 @@ export function AuthPage({ onLoginSuccess }) {
 
           <button
             type="button"
-            style={{ ...styles.button, ...styles.googleButton }}
+            style={styles.googleButton}
+            className="py-3 px-4 cursor-pointer"
             onClick={handleGoogleSignIn}
-            disabled={loading}
           >
-            <GoogleIcon />
-            Continue with Google
+            {console.log(GoogleIcon())}
+           {GoogleIcon()} Sign in with Google
           </button>
-
-          {error && <div style={styles.error}>{error}</div>}
-          {success && <div style={styles.success}>{success}</div>}
         </form>
       ) : (
         <form style={styles.form} onSubmit={handleEmailSignUp}>
@@ -365,7 +360,7 @@ export function AuthPage({ onLoginSuccess }) {
               style={styles.input}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="johndoe"
+              placeholder="Your Name"
               required
             />
           </div>
@@ -395,29 +390,14 @@ export function AuthPage({ onLoginSuccess }) {
           </div>
 
           <button type="submit" style={{ ...styles.button, ...styles.primaryButton }} disabled={loading}>
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? "Creating account..." : "Sign Up"}
           </button>
-
-          <div style={styles.divider}>
-            <div style={styles.line}></div>
-            <div style={styles.dividerText}>OR</div>
-            <div style={styles.line}></div>
-          </div>
-
-          <button
-            type="button"
-            style={{ ...styles.button, ...styles.googleButton }}
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-          >
-            <GoogleIcon />
-            Sign up with Google
-          </button>
-
-          {error && <div style={styles.error}>{error}</div>}
-          {success && <div style={styles.success}>{success}</div>}
         </form>
       )}
+
+      
+
+      <ToastContainer /> {/* Toast notifications container */}
     </div>
   )
 }
